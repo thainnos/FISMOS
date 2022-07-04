@@ -1,4 +1,4 @@
-<img align="right" height="100" alt="FISMOS" title="FISMOS" src="misc/logo_FISMOS/Logo_FISMOS.conv.png"/>
+<img align="right" height="100" alt="FISMOS" title="FISMOS" src="misc/Logo_FISMOS.conv.png"/>
 
 # FPGA Implementation of a Security Module as Open Source
 
