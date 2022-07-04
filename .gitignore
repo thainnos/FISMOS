@@ -1,0 +1,42 @@
+# Gitignore for FISMOS project
+
+# FPGA projects
+#/hw
+
+# Firmware intermediate files
+*.hex
+*.elf
+*.o
+*.mem
+firmware/*.bin
+*.d
+
+# Folder from Vivado Project
+/FISMOS/viv_project/*
+
+# Firmware
+*.map
+
+# Local backup folders and files
+*_OLD.*
+*OLD*/
+
+# Lock files from JabRef
+*.bib.bak
+*.bib.sav
+
+# Compiler folder of Quartus
+synth_*/
+
+# Visual Studio Code
+.vscode
+
+# Temp working files
+*.work.*
+
+# ModelSim working library
+work
+
+# Quartus internal database
+db
+incremental_db
