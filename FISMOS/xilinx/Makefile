@@ -14,7 +14,7 @@ export SCRIPT_ROOTDIR = ../../scripts
 #####
 # Xilinx
 #####
-VIVADO_BASE = /opt/xilinx/Vivado/2020.2
+VIVADO_BASE = /opt/Xilinx/Vivado/2021.2
 VIVADO = $(VIVADO_BASE)/bin/vivado
 XVLOG = $(VIVADO_BASE)/bin/xvlog
 XELAB = $(VIVADO_BASE)/bin/xelab
@@ -85,7 +85,7 @@ help:
 ####
 
 firmware32_hex: 
-	cd $(FW_ROOTDIR) && make FISMOS_firmware.hex
+	cd $(FW_ROOTDIR) && make 
 
 ####
 # Icarus
@@ -133,9 +133,6 @@ add_prog_tcl:
 	@echo close_hw_target >> $(PROJECT).tcl
 	@echo disconnect_hw_server localhost:3121 >> $(PROJECT).tcl
 
-add_zynq_tcl:
-	@echo create_bd_design "fismos_top"
-
 ##
 # Sim
 ##
@@ -147,9 +144,6 @@ sim:
 ##
 # Prog
 ##
-vivado: clean_tcl open_gui_tcl
-	$(VIVADO) -nojournal -log $(PROJECT).log -source $(PROJECT).tcl
-
 synth: firmware32_hex clean_tcl add_synth_tcl
 	$(VIVADO) -nojournal -log $(PROJECT).log -mode batch -source $(PROJECT).tcl
 	#rm -rf .Xil fsm_encoding.os synth_*.backup.log usage_statistics_webtalk.*
@@ -162,8 +156,8 @@ prog: firmware32_hex clean_tcl add_prog_tcl
 synth_prog: firmware32_hex clean_tcl add_synth_tcl add_prog_tcl
 	$(VIVADO) -nojournal -log $(PROJECT).log -mode batch -source $(PROJECT).tcl
 
-synth_generate_xsa: firmware32_hex clean_tcl add_synth_tcl add_zynq_tcl
-	# Add TCL script commands for connecting 
+vivado: clean_tcl open_gui_tcl
+	$(VIVADO) -nojournal -log $(PROJECT).log -source $(PROJECT).tcl
 
 ####
 # Petalinux
