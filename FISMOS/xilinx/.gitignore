@@ -1,0 +1,9 @@
+*.log
+*.bit
+synth_*.tcl
+synth_*.v
+/.Xil
+
+*_tb
+
+*.jou
