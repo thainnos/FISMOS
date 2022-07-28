@@ -16,7 +16,9 @@ sudo chown $USER:$USER /opt/riscv32i
 cd ~/Documents
 git clone https://github.com/riscv/riscv-gnu-toolchain riscv-gnu-toolchain-rv32i
 cd riscv-gnu-toolchain-rv32i
-git checkout 411d134
+# git checkout 411d134 
+# This commit was originally recommended for PicoRV32
+# As dependencies have change, a switch to origin/main was done
 git submodule update --init --recursive
 
 # Build and install

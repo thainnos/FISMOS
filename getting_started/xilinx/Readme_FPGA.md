@@ -25,10 +25,9 @@ sudo apt install libtinfo5 -y
 * Get `2020.3` version from Download Section [Link](https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/2020-3.html)
 * Extract download with e.g. `tar -xvf Xilinx_Unified_*.tar.gz`
 * Make the installer executable `chmod +x xsetup` && run it!
-* 
-
 
 ---
+
 ## Install board files for PYNQ-Z2 board
 
 ```shell
@@ -36,14 +35,17 @@ cp -r ./additional_board_files/ $INSTALLDIR/Vivado/$VERSION/data/boards/board_fi
 ```
 
 ---
+
 ## USB-Cable Drivers for e.g. Hardware Manager
 
-- run driver installation `cd /opt/Xilinx/Vivado/2020.2/data/xicom/cable_drivers/lin64/install_script/install_drivers/ && sudo ./install_drivers`
-- Restart the editor!
+* run driver installation `cd /opt/Xilinx/Vivado/2020.2/data/xicom/cable_drivers/lin64/install_script/install_drivers/ && sudo ./install_drivers`
+* Restart the editor!
 
 ---
-# Troubleshooting
-## Get patch for multi-monitor usage
+
+## Troubleshooting
+
+### Get patch for multi-monitor usage
 
 > Vivado, respectively `Java` will crash on startup, if more than two monitors are used!
 
@@ -77,9 +79,10 @@ vivado &
 ```
 
 ---
-# Headless Installation
 
-## Install Tools
+## Headless Installation
+
+### Install Tools
 
 > This section applies to a headless installation, check further upwards in this document for graphical version
 
@@ -90,7 +93,7 @@ vivado &
 5. Run `./xsetup -b AuthTokenGen --location <DESTINATION>` to setup Xilinx account
 6. Run setup with `./xsetup -c <CONFIG_LOCATION> xsetup -a XilinxEULA,3rdPartyEULA,WebTalkTerms -b Install --location <DESTINATION>`
 
-## Run script for driver install for HW manager
+### Run script for driver install for HW manager
 
 ```shell
 cd $INSTALLDIR"Vivado/$VERSION/data/xicom/cable_drivers/lin64/install_script/install_drivers/"
