@@ -1,14 +1,14 @@
-<img align="right" height="100" alt="FISMOS" title="FISMOS" src="misc/Logo_FISMOS.conv.png"/>
+<img align="right" height="100" alt="FISMOS" title="FISMOS" src="misc/logo_FISMOS/Logo_FISMOS.conv.png"/>
 
 # FPGA Implementation of a Security Module as Open Source
 
 ## Overview
 
-* [Getting Started](getting_started/Readme.md): Scripts to get you set up for Development 
+* [Getting Started](getting_started/Readme.md): Scripts to get you set up for Development
 
   ---
 * [FISMOS](sys/Readme.md):  `Makefiles` to call IDE with TCL scripts from `./scripts/` and start programmer
-* [Scripts](scripts/Readme.md): Scripts for synthesizing, compiling and deploying 
+* [Scripts](scripts/Readme.md): Scripts for synthesizing, compiling and deploying
 
   ---
 * [Gateware](hw/Readme.md): RTL in `Verilog`
@@ -20,8 +20,7 @@
 
 ---
 
-## Internal FISMOS memory map:
-
+## Internal FISMOS memory map
 
 | Address Range            | Description                             |
 | ------------------------ | --------------------------------------- |
@@ -48,6 +47,7 @@
 > AXI_BASE_ADDRESS is configured via `TCL` script or chosen manually during synthesis
 
 ---
+
 ### FISMOS Instruction Register
 
 | Bit | Description                                               |
@@ -56,15 +56,20 @@
 |     24 | Interrupt  from Linux to FISMOS                               |
 |     23:0 | Selected Mode for FISMOS                                 |
 
-#### Mode 
+#### Mode
 
 | Value [15:0] | Mode |
 |--|--|
-| 0x0001 | AES-256-CBC-Decrypt |
-| 0x0002 | AES-256-CBC-Encrypt |
+| 0x0001 | AES-256-CBC-Decrypt with tinyAES|
+| 0x0002 | AES-256-CBC-Encrypt with tinyAES|
+| 0x0003 | **Compute** HMAC (SHA256) with mbedTLS|
+| 0x0004 | **Compare** HMAC (SHA256) with mbedTLS|
+| 0x0005 | Sign Data with RSA and mbedTLS|
+| 0x000F | Get key, based on requested 256bit identifier|
 | 0xFFFF | RESERVED |
 
 ---
+
 ### Return Register
 
 | Bit | Description                                               |
@@ -81,9 +86,9 @@
 | 0xFF_FFFF | Reset Interrupt Line to Linux |
 | 0x0F_{MODE} | Working on Requested Mode |
 | 0xFF_{MODE} | Requested Mode Done |
-| 0x00_0002 | AES-256-CBC-Encrypt |
 
 ---
+
 ## Acknowledgement and Dependencies
 
 Motivation of the presented FISMOS is to overcome the need for external components for security features.
@@ -99,12 +104,14 @@ This project was inspired by the [PicoSoc](https://github.com/YosysHQ/picorv32) 
 Long-term, programming in `Rust` is considered as well as making use of dedicated security modules in programmable logic.
 
 ---
+
 ## License
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)  
-This repository is planned to be compliant to [reuse](https://reuse.software/) in the near future. 
+This repository is planned to be compliant to [reuse](https://reuse.software/) in the near future.
 
 ---
+
 # Paper
 
 A first research paper can be found [here](http://gateway-bayern.de/BV047383875). A follow-up paper is planed for 2022.
