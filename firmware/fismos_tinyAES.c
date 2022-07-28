@@ -1,54 +1,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include "fismos.h"
+#include "fismos_memcmp.h"
 
 #include "aes.h"
-#include "firmware.h"
-#include "memcpy.c"
 
-#define DEBUG
-
-void test_aes(void);
-
-// Testing CBC encryption with AES256
-
-uint32_t *irq(uint32_t *regs, uint32_t irqs) {
-  static uint32_t CONTROL;
-  static uint32_t STATUS;
-  print_str("Interupt called from PicoRV32!\n");
-  // Set FISMOS to busy state
-  set_status_register(0x0000ffff);
-  CONTROL = get_control_register();
-  print_str("Control register:");
-  print_hex(CONTROL, 8);
-  print_str("\n");
-  STATUS = get_status_register();
-  print_str("Status register:");
-  print_hex(STATUS, 8);
-  print_str("\n");
-
-  if ((CONTROL << 8) == 0x000001 << 8) 
-  {
-    test_aes();
-  set_status_register(0xffff0001);
-  print_str("\nInterupt routine 1 done\n\n");
-  }
-
-  if ((CONTROL << 8) == 0x000002 << 8) 
-  {
-    print_str("Interupt routine 2 called from PicoRV32!\n\n");
-    set_status_register(0xffff0002);
-  }
-
-  if (irqs == 0x00000002) {
-    print_str("irqs == 0x00000002\n\n");
-  }
-
-  print_str("\nReturn to main\n\n");
-  return regs;
-}
-
-void test_aes(void) {
+int FISMOS_AES256_decrypt_CBC(void){
   uint16_t i, j;
 
   uint32_t in_32[16];
@@ -61,7 +19,7 @@ void test_aes(void) {
                    0x1f, 0x35, 0x2c, 0x07, 0x3b, 0x61, 0x08, 0xd7,
                    0x2d, 0x98, 0x10, 0xa3, 0x09, 0x14, 0xdf, 0xf4};
 
-#ifdef DEBUG
+#ifdef FISMOS_DEBUG
   uint8_t out[] = {0x6b, 0xc1, 0xbe, 0xe2, 0x2e, 0x40, 0x9f, 0x96, 0xe9, 0x3d,
                    0x7e, 0x11, 0x73, 0x93, 0x17, 0x2a, 0xae, 0x2d, 0x8a, 0x57,
                    0x1e, 0x03, 0xac, 0x9c, 0x9e, 0xb7, 0x6f, 0xac, 0x45, 0xaf,
@@ -74,38 +32,38 @@ void test_aes(void) {
   struct AES_ctx ctx;
 
   for (i = 0; i < (sizeof(in_32) / sizeof(uint32_t)); i++) {
-    in_32[i] = read_32bit_from_AXI_memory(i * 4);
+    in_32[i] = FISMOS_read_32bit_from_AXI_memory(i * 4);
     in[i * 4 + 3] = in_32[i] & 0xff;
     in[i * 4 + 2] = in_32[i] >> 8 & 0xff;
     in[i * 4 + 1] = in_32[i] >> 16 & 0xff;
     in[i * 4 + 0] = in_32[i] >> 24 & 0xff;
   }
 
-#ifdef DEBUG
-  print_str("\nPrinting plaintext in 8 bit\n");
+#ifdef FISMOS_DEBUG
+  printf("\nPrinting plaintext in 8 bit\n");
   for (i = 0; i < (sizeof(in) / sizeof(uint8_t));) {
     print_hex(in[i], 2);
-    print_str(" ");
+    printf(" ");
     i += 1;
     if (i % 16 == 0) {
-      print_str("\n");
+      printf("\n");
     }
   }
 #endif
 
-  print_str("\nStarting AES256 decrypt in CBC mode with 128bit data\n");
+  printf("\nStarting AES256 decrypt in CBC mode with 128bit data\n");
 
   AES_init_ctx_iv(&ctx, key, iv);
   AES_CBC_decrypt_buffer(&ctx, in, (sizeof(in) / sizeof(uint8_t)));
 
-#ifdef DEBUG
-  print_str("\nPrinting cipher in 8 bit\n");
+#ifdef FISMOS_DEBUG
+  printf("\nPrinting cipher in 8 bit\n");
   for (i = 0; i < (sizeof(in) / sizeof(uint8_t));) {
     print_hex(in[i], 2);
-    print_str(" ");
+    printf(" ");
     i += 1;
     if (i % 16 == 0) {
-      print_str("\n");
+      printf("\n");
     }
   }
 #endif
@@ -116,17 +74,18 @@ void test_aes(void) {
        j < (sizeof(in_32) / sizeof(uint32_t) + 18); j++) {
     in_32[i] = (in[i * 4] << 24) + (in[i * 4 + 1] << 16) +
                (in[i * 4 + 2] << 8) + in[i * 4 + 3];
-    write_32bit_to_AXI_memory(in_32[i],i * 4);
+    FISMOS_write_32bit_to_AXI_memory(in_32[i],i * 4);
     i += 1;
   }
 
-#ifdef DEBUG
+#ifdef FISMOS_DEBUG
   if (0 == memcmp((char *)out, (char *)in, (sizeof(in) / sizeof(uint8_t)))) {
-    print_str("Decryption YES!\n");
+    printf("Decryption YES!\n");
   } else {
-    print_str("Decryption NO!\n");
+    printf("Decryption NO!\n");
   }
 #endif
 
-  return;
+  return 0;
 }
+

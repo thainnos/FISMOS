@@ -1,0 +1,8 @@
+*.c._IGNORE
+*.o
+*.hex
+*.d
+
+include
+library
+main

@@ -1,32 +1,65 @@
-RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX = /opt/riscv32
-PYTHON = python3
-IVERILOG = iverilog
+RISCV_TOOLS_PREFIX = /opt/riscv32i/bin/riscv32-unknown-elf-
+SCRIPT_DIR = ../scripts
+CC = $(RISCV_TOOLS_PREFIX)gcc
+CCFLAGS = -MD -Os -Wall -I ./include/psa -I ./include/mbedtls -I ./include -I ./library
+LDFLAGS = -Wl,--gc-sections
+LDLIBS = -I ./include/psa -I ./include/mbedtls -I ./include -I ./library
 
-FIRMWARE_OBJS = start.o irq.o print.o fismos.o aes.o main.o
-GCC_WARNS  = -Werror -Wall -Wextra -Wshadow -Wundef -Wpointer-arith -Wcast-qual -Wcast-align -Wwrite-strings
-GCC_WARNS += -Wredundant-decls -Wstrict-prototypes -Wmissing-prototypes -pedantic # -Wconversion
-TOOLCHAIN_PREFIX = $(RISCV_GNU_TOOLCHAIN_INSTALL_PREFIX)i/bin/riscv32-unknown-elf-
-COMPRESSED_ISA = C
+SUBDIR = ./library
+SRCS = $(wildcard *.c $(foreach fd, $(SUBDIR), $(fd)/*.c)) fismos.c
+OBJS = $(SRCS:.c=.o)
 
-FISMOS_firmware.hex: firmware.bin ../scripts/makehex.py
-	$(PYTHON) ../scripts/makehex.py $< 32768 > $@
-	cp $@ firmware.mem
+.PHONY: clean
 
-firmware.bin: firmware.elf
-	$(TOOLCHAIN_PREFIX)objcopy -O binary $< $@
-	chmod -x $@
+FISMOS_firmware.hex: firmware.elf start.elf
+	$(RISCV_TOOLS_PREFIX)objcopy -O verilog start.elf start.tmp
+	$(RISCV_TOOLS_PREFIX)objcopy -O verilog firmware.elf firmware.tmp
+	cat start.tmp firmware.tmp > firmware.hex
+	python3 $(SCRIPT_DIR)/hex8tohex32.py firmware.hex > FISMOS_firmware.hex
+	rm -f start.tmp firmware.tmp
 
-firmware.elf: $(FIRMWARE_OBJS) sections.lds
-	$(TOOLCHAIN_PREFIX)gcc -Os -ffreestanding -nostdlib -o $@ -Wl,-Bstatic,-T,sections.lds,-Map,firmware.map,--strip-debug \
-		$(FIRMWARE_OBJS) -lgcc
-	chmod -x $@
+firmware.elf: $(OBJS)
+	$(CC) $(LDFLAGS) $(LDLIBS) -o $@ $^ -T riscv.ld
+	chmod -x firmware.elf
 
-start.o: start.S
-	$(TOOLCHAIN_PREFIX)gcc -c -march=rv32im$(subst C,c,$(COMPRESSED_ISA)) -o $@ $<
+# Default C source file compilation
+.c.o:
+	$(CC) $(CCFLAGS) -c -o $@ $^ $(LDLIBS)
+	chmod -x $<
 
-%.o: %.c
-	$(TOOLCHAIN_PREFIX)gcc -c -march=rv32i$(subst C,c,$(COMPRESSED_ISA)) -Os --std=c99 $(GCC_WARNS) -ffreestanding -nostdlib -o $@ $<
+# Bootloader
+start.elf: start.S start.ld
+	$(CC) -nostdlib -o start.elf start.S -T start.ld $(LDLIBS)
+	chmod -x start.elf
 
+# Set Up mbedtls
+get_mbedtls_for_FISMOS_softcore:
+	git clone https://github.com/Mbed-TLS/mbedtls.git DOWNLOAD_mbedtls -b v2.28.0
+	mkdir -p include library
+	mv DOWNLOAD_mbedtls/include .
+	mv DOWNLOAD_mbedtls/library/*.h ./library
+	mv DOWNLOAD_mbedtls/library/*.c ./library
+	rm -rf DOWNLOAD_mbedtls
+	# See ./Readme.md, why this is done
+	sed -i 's/#define MBEDTLS_NET_C/\/\/ #define MBEDTLS_NET_C/g' include/mbedtls/config.h
+	sed -i 's/\/\/#define MBEDTLS_NO_PLATFORM_ENTROPY/#define MBEDTLS_NO_PLATFORM_ENTROPY/g' include/mbedtls/config.h
+	sed -i 's/#define MBEDTLS_TIMING_C/\/\/ #define MBEDTLS_TIMING_C/g' include/mbedtls/config.h
+	mv ./library/x509_crt.c ./library/x509_crt.c._IGNORE
+
+remove_mbedtls: clean
+	mkdir NOTDELETE
+	mv firmware.* ./NOTDELETE/
+	mv fismos.* ./NOTDELETE/
+	mv syscalls.c ./NOTDELETE/
+	rm -f *.c *.c._IGNORE *.h
+	rm -rf ./psa ./mbedtls ./DOWNLOAD_mbedtls
+	mv ./NOTDELETE/* ./
+	rm -rf ./NOTDELETE/
+
+# Cleanup
 clean:
-	rm -vrf $(FIRMWARE_OBJS) \
-		firmware.elf firmware.bin firmware.hex firmware.map firmware.mem FISMOS_firmware.hex
+	rm -f *.o *.d *.tmp *.elf
+	rm -f firmware.elf firmware.hex FISMOS_firmware.hex
+	rm -f testbench.vvp testbench.vcd
+
+-include *.d
