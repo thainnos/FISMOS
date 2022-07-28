@@ -21,13 +21,13 @@ module cpu_memory #(
 	end 
 
 	// Memory RAM
-	(* RAM_STYLE="auto" *) reg [31:0] memory [0:(MEM_DEPTH-1)];
+	(* RAM_STYLE="auto" *) reg [31:0] memory [0:(MEM_DEPTH/4-1)];
 	initial $readmemh("../../firmware/FISMOS_firmware.hex", memory);
 
 	// Memory logic
 	always @(posedge clk) begin
 		mem_ready <= 0;
-		if (mem_valid && !mem_ready && mem_addr <= `FISMOS_CPU_MEM_HIGH_ADDRESS) begin
+		if (mem_valid && !mem_ready && mem_addr < MEM_DEPTH) begin
 			mem_ready <= 1;
 			if	(mem_addr < MEM_DEPTH) begin
 					if (|mem_wstrb) begin

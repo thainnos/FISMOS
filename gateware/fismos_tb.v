@@ -48,21 +48,21 @@ module fismos_tb;
 		DUT.fismos_AXI_shared_memory_0.axil_dp_ram_0.bram_in[15][31:0] = 32'h8c6a_9d1b;
 	`endif
 
-	// Always drop AXI memory
+	// Drop AXI memory for DEBUG
+	`ifdef FISMOS_TB_DEBUG
 		for (i = 0; i <= top_address; i = i + 1) begin
 			$write("mem_in[%d] of AXI memory: 0x%h\n",i,DUT.fismos_AXI_shared_memory_0.axil_dp_ram_0.bram_in[i][31:0]);
     	end
-	end
+	`endif
 
-	// Reset FISMOS
-	initial begin
-		$display("\n\nFISMOS_TB");
-		repeat (1000) @(posedge clk);
+	// FISMOS Testbench Begin
+	$display("\n\nFISMOS_TB");
+	repeat (1000) @(posedge clk);
 
 	`ifdef FISMOS_TB_TRIGGER_INTERRUPT_TO_FISMOS
 		// Set control register and therefore trigger interrupt
 		$write("FISMOS_TB: control_register: %h\n",DUT.fismos_AXI_shared_memory_0.axil_dp_ram_0.control_register[31:0]);
-		DUT.fismos_AXI_shared_memory_0.axil_dp_ram_0.control_register[31:0] = 32'hdf00_0001;
+		DUT.fismos_AXI_shared_memory_0.axil_dp_ram_0.control_register[31:0] = `FISMOS_TB_ACTIVE_CHECK_MODE;
 		$write("FISMOS_TB: control_register: %h\n",DUT.fismos_AXI_shared_memory_0.axil_dp_ram_0.control_register[31:0]);
 	`endif
 
@@ -94,6 +94,13 @@ module fismos_tb;
 	// Stop testbench if end of main() is reached
 	// This is done by printing of '~' from the PicoRV32
 	always @(posedge clk) begin
+
+		if (resetn && trap) begin
+			repeat (10) @(posedge clk);
+			$display("TRAP");
+			$finish;
+		end
+
 		if (out32bit[31:0] == 32'h0000_007E) begin
 			$write("\n");
 			// Drop AXI memory

@@ -19,9 +19,7 @@ module io_memory #(
 
     always @(posedge clk) begin
 			mem_ready <= 0;
-
 			out32bit_en <= 0;
-
 			if (mem_valid && !mem_ready && |mem_wstrb && (mem_addr == `FISMOS_OUT32BIT_ADDRESS)) begin
 					if (mem_wstrb[0]) out32bit[ 7: 0] <= mem_wdata[ 7: 0];
 					if (mem_wstrb[1]) out32bit[15: 8] <= mem_wdata[15: 8];

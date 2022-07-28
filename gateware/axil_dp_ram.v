@@ -353,7 +353,7 @@ always @(posedge S_AXIL_B_CLK) begin
 end
 
 // Interrupt incoming from Linux to Softcore
-`ifdef FISMOS_DEBUG_STATIC_INTERRUPT_TO_FISMOS
+`ifdef FISMOS_STATIC_INTERRUPT_TO_PICORV32
     always @(posedge S_AXIL_B_CLK) begin
             interrupt_to_softcore = 1;
     end

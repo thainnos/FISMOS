@@ -45,10 +45,13 @@ module fismos #(
 	 output	[1:0]						S_AXI_RRESP,
 	`endif
 
+	`ifdef OUTLINE_INTERRUPT_TO_LINUX
+	output							interrupt_to_linux,
+	`endif
+
 	output								trap,
 	output								out32bit_en,
-	output [31:0]						out32bit,
-	output							interrupt_to_linux
+	output [31:0]						out32bit
 );
 
 	// PicoRV32 memory interface
@@ -58,13 +61,49 @@ module fismos #(
 	wire mem_ready_mem;
 	wire mem_ready_io;
 	wire mem_ready_AXI;
+	wire interrupt_to_linux;
 	wire [31:0] mem_addr;
 	wire [31:0] mem_wdata;
 	wire [3:0] mem_wstrb;
 	wire [31:0] mem_rdata;
 	wire [31:0] mem_rdata_mem;
 	wire [31:0] mem_rdata_AXI;
-	
+
+
+	`ifndef AXI_SLAVE_INTERFACE_ACTIVATE
+	// AXI slave interface
+	wire								S_AXI_CLK;
+	wire								S_AXI_RESETN;
+	//
+	wire								S_AXI_AWVALID;
+	wire								S_AXI_AWREADY;
+	wire	[AXI_ADDR_WIDTH-1:0]		S_AXI_AWADDR;
+	wire	[2:0]						S_AXI_AWPROT;
+	//
+	wire								S_AXI_WVALID;
+	wire								S_AXI_WREADY;
+	wire	[AXI_DATA_WIDTH-1:0]		S_AXI_WDATA;
+	wire	[AXI_DATA_WIDTH/8-1:0]		S_AXI_WSTRB;
+	//
+	wire								S_AXI_BVALID;
+	wire								S_AXI_BREADY;
+	wire	[1:0]						S_AXI_BRESP;
+	//
+	wire								S_AXI_ARVALID;
+	wire								S_AXI_ARREADY;
+	wire	[AXI_ADDR_WIDTH-1:0]		S_AXI_ARADDR;
+	wire	[2:0]						S_AXI_ARPROT;
+	//
+	wire								S_AXI_RVALID;
+	wire								S_AXI_RREADY;
+	wire	[AXI_DATA_WIDTH-1:0]		S_AXI_RDATA;
+	wire	[1:0]						S_AXI_RRESP;
+	`endif
+
+	`ifndef OUTLINE_INTERRUPT_TO_LINUX
+	wire							interrupt_to_linux;
+	`endif
+
 	// Assign correct memory ready signal
 	assign mem_ready = mem_ready_io ^ mem_ready_mem ^ mem_ready_AXI;
 
@@ -91,7 +130,8 @@ module fismos #(
 		.ENABLE_IRQ(`FISMOS_ENABLE_INTERRUPT),
 		.MASKED_IRQ(`FISMOS_MASKED_IRQ),
 		.LATCHED_IRQ(`FISMOS_LATCHED_IRQ),
-		.STACKADDR(`FISMOS_STACK_ADDRESS)
+		.STACKADDR(`FISMOS_STACK_ADDRESS),
+		.COMPRESSED_ISA(1)
 	) picorv32_0 (
 		.clk			(clk         ),
 		.resetn			(resetn_init      ),
