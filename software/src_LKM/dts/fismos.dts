@@ -1,0 +1,16 @@
+/dts-v1/;
+/plugin/;
+/ {
+	fragment@0 {
+		target-path = "&axi";
+		__overlay__ {
+				fismos_0: fismos@43c00000 {
+				/* This is a place holder node for a custom IP, user may need to update the entries */
+				clock-names = "clk", "S_AXI_CLK";
+				clocks = <&clkc 15>, <&clkc 15>;
+				compatible = "xlnx,fismos-1.0";
+				reg = <0x43c00000 0x200>;
+			};
+				};
+			};
+};
