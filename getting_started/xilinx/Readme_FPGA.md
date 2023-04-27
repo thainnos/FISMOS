@@ -1,8 +1,8 @@
 # Installing Vivado
 
-# Preparation
+## Preparation
 
-## Check Shell
+### Check Shell
 
 > Vivado relies on using `sh` instead of `bash`
 
@@ -11,7 +11,7 @@ ls -l /bin/sh
 ln -sf /bin/bash /bin/sh
 ```
 
-## Install `libtinfo5`
+### Install `libtinfo5`
 
 ```shell
 sudo apt update && sudo apt upgrade -y
@@ -66,8 +66,8 @@ echo $text >> /home/$USER/Desktop/'Vivado 2019.2.desktop'
 
 ## Language problem
 
-Unexpected commas in the xdc files may cause crashes. This points to a localization problem. 
-To overcome this, change the `$LANG environment` variable to `en_US.UTF-8`. 
+Unexpected commas in the xdc files may cause crashes. This points to a localization problem.
+To overcome this, change the `$LANG environment` variable to `en_US.UTF-8`.
 
 If this doesn't help, replace the $LC_NUMERIC variable. I.e. something like this:
 

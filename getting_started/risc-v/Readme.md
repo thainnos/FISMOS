@@ -1,6 +1,6 @@
 # Installing the RISC-V compiler on Debian-based System
 
-> Based on https://github.com/cliffordwolf/picorv32#building-a-pure-rv32i-toolchain
+> Based on <https://github.com/cliffordwolf/picorv32#building-a-pure-rv32i-toolchain>
 
 ```shell
 # Ubuntu packages needed:

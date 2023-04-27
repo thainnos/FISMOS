@@ -13,9 +13,10 @@ sudo apt-get install verilog
 > Check e.g. [Fandom](https://iverilog.fandom.com/wiki/Installation_Guide) for other OS
 
 ---
+
 ## Install from Source on Linux
 
-> Script based on https://github.com/steveicarus/iverilog
+> Script based on <https://github.com/steveicarus/iverilog>
 
 ``` shell
 ## Get sources
@@ -36,4 +37,3 @@ sudo make install
 cd ../
 rm -r iverilog-11_0/
 ```
-

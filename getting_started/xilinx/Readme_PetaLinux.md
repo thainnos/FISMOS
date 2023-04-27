@@ -1,8 +1,8 @@
 # Installing Petalinux
 
-# Preparation
+## Preparation
 
-## Installint additional packages
+### Installint additional packages
 
 > Note: This script is based on prior installing Vivado toolchain, see specific [Readme_FPGA.md](./Readme_FPGA.md)
 
@@ -14,13 +14,11 @@ sudo apt install netstat-* xterm gcc-multilib ncurses-* zlib1g:i386 net-tools -y
 
 ## Get installer
 
-
 * Check Homepage of Xilinx for Downloads here: [Link](https://www.xilinx.com/downloadNav/embedded-design-tools/2021-1.html)
-
-
+  
 * Make executable with `sudo chmod +x ./petalinux-v*`
 * Run `./petalinux-v****.*-final-installer.run -d /opt/Xilinx/Petalinux`
-* **Alternative**: Move installer to `/opt/Xilinx/Petalinux/` and run `./petalinux-v2020.2-final-installer.run` 
+* **Alternative**: Move installer to `/opt/Xilinx/Petalinux/` and run `./petalinux-v2020.2-final-installer.run`
   
 * Confirm License Agreement with `q -> y -> Enter`
 * **INSTALL!**

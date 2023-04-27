@@ -82,7 +82,7 @@ petalinux-boot --qemu --u-boot
 
 ## General info
 
-`petalinux-package` generates a device tree binary DTB file, a First Stage Bootloader(FSBL), U-Boot, the Linux kernel FIT image, and compressed root filesystem .  
+`petalinux-package` generates a device tree binary DTB file, a First Stage Bootloader(FSBL), U-Boot, the Linux kernel FIT image, and compressed root filesystem.  
 Finally, it generates the necessary boot images :
 
 1. BOOT.BIN : A binary file which is responsible for loading the FPGA bitstream, the FSBL and the U-Boot.
@@ -149,14 +149,14 @@ sync
 
 ## Insert card into ZedBoard and power up
 
-## Connect via UART and check for IP adress
+## Connect via UART and check for IP address
 
 ```shell
 minicom -D /dev/ttyUSB1 -b 115200
 ifconfig
 ```
 
-## IfConfig
+## `IfConfig`
 
 ```shell
 ifconfig eth0

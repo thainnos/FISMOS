@@ -6,9 +6,8 @@
 
 * ownload Quartus Prime Lite from [https://www.intel.de/content/www/de/de/software/programmable/quartus-prime/overview.html]
 * Unpack and install it to `/opt/intelFPGA_lite/`!
- 
- ---
-## If `libpng12.so.0` is missing, do the following:
+
+### `libpng12.so.0` is missing
 
 ```shell
 sudo add-apt-repository ppa:linuxuprising/libpng12
@@ -16,8 +15,7 @@ sudo apt update
 sudo apt install libpng12-0
 ```
 
----
-## Add Quartus to bash
+### Add Quartus to bash
 
 `sudo nano ~/.bashrc`
 
@@ -54,9 +52,7 @@ export PATH=$PATH:${MODELSIMPATH}/bin
 source ~/.bashrc
 ```
 
----
-## Cable Drivers for USB Blaster I & II
-
+### Cable Drivers for USB Blaster I & II
 
 Add a new file `/etc/udev/rules.d/92-usbblaster.rules` file.  
 Note that the 92 is important for e.g. Debian Wheezy as there is a default rule for "usbfs-like" devices `/lib/udev/rules.d/91-permissions.rules` specifying a MODE of 664.  
@@ -74,7 +70,8 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="09fb", ATTR{idProduct}=="6810", MODE="0666"
 ````
 
 ---
-# Modelsim
+
+## Modelsim
 
 * Open Quartus and go to Tools>Options>EDA Tool Options, and make sure the path for ModelSim-Altera is set to `/<YOUR_DIRECTORY>/modelsim_ase/bin`
 * Go to Assignments>Settings>EDA Tool Settingsand make sure the Simulation Tool Name is set to ModelSim-Altera
@@ -85,7 +82,7 @@ SUBSYSTEM=="usb", ATTR{idVendor}=="09fb", ATTR{idProduct}=="6810", MODE="0666"
   * `vco="linux_rh60"` to `vco="linux"`
   * `mode=${MTI_VCO_MODE:-" "}` to `mode=${MTI_VCO_MODE:-"32"}`
 
-## Install dependencies
+### Install dependencies
 
 ```shell
 sudo dpkg --add-architecture i386
@@ -107,9 +104,10 @@ libxtst6:i386 libxtst6:i386
 
 > Note: This also should include `Freetype`. If it doesn't do so, check next heading.
 
-### If error: `** Fatal: Read failure in vlm process (0,0)`
+#### If error: `** Fatal: Read failure in vlm process (0,0)`
 
-* Get current version from e.g. [GNU.org](https://download-mirror.savannah.gnu.org/releases/freetype/)
+* Get current version from e.g. [GNU.org]
+* Link: <https://download-mirror.savannah.gnu.org/releases/freetype/>
 
 ```shell
 tar xvf freetype-2.4.12

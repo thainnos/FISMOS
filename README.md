@@ -127,5 +127,3 @@ To cite the FISMOS, you can use the official BibTex entry:
   url       = {https://doi.org/10.25929/7mtt-nz04},\
 }
 </pre>
-
-[website]: https://hsainnos.de
