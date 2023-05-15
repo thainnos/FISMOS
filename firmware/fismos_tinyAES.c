@@ -6,7 +6,8 @@
 
 #include "aes.h"
 
-int FISMOS_AES256_decrypt_CBC(void){
+int FISMOS_AES256_decrypt_CBC(void)
+{
   uint16_t i, j;
 
   uint32_t in_32[16];
@@ -31,7 +32,8 @@ int FISMOS_AES256_decrypt_CBC(void){
 
   struct AES_ctx ctx;
 
-  for (i = 0; i < (sizeof(in_32) / sizeof(uint32_t)); i++) {
+  for (i = 0; i < (sizeof(in_32) / sizeof(uint32_t)); i++)
+  {
     in_32[i] = FISMOS_read_32bit_from_AXI_memory(i * 4);
     in[i * 4 + 3] = in_32[i] & 0xff;
     in[i * 4 + 2] = in_32[i] >> 8 & 0xff;
@@ -41,11 +43,13 @@ int FISMOS_AES256_decrypt_CBC(void){
 
 #ifdef FISMOS_DEBUG
   printf("\nPrinting plaintext in 8 bit\n");
-  for (i = 0; i < (sizeof(in) / sizeof(uint8_t));) {
+  for (i = 0; i < (sizeof(in) / sizeof(uint8_t));)
+  {
     print_hex(in[i], 2);
     printf(" ");
     i += 1;
-    if (i % 16 == 0) {
+    if (i % 16 == 0)
+    {
       printf("\n");
     }
   }
@@ -58,11 +62,13 @@ int FISMOS_AES256_decrypt_CBC(void){
 
 #ifdef FISMOS_DEBUG
   printf("\nPrinting cipher in 8 bit\n");
-  for (i = 0; i < (sizeof(in) / sizeof(uint8_t));) {
+  for (i = 0; i < (sizeof(in) / sizeof(uint8_t));)
+  {
     print_hex(in[i], 2);
     printf(" ");
     i += 1;
-    if (i % 16 == 0) {
+    if (i % 16 == 0)
+    {
       printf("\n");
     }
   }
@@ -71,21 +77,24 @@ int FISMOS_AES256_decrypt_CBC(void){
   // Write result to memory
   i = 0;
   for (j = (sizeof(in_32) / sizeof(uint32_t) + 2);
-       j < (sizeof(in_32) / sizeof(uint32_t) + 18); j++) {
+       j < (sizeof(in_32) / sizeof(uint32_t) + 18); j++)
+  {
     in_32[i] = (in[i * 4] << 24) + (in[i * 4 + 1] << 16) +
                (in[i * 4 + 2] << 8) + in[i * 4 + 3];
-    FISMOS_write_32bit_to_AXI_memory(in_32[i],i * 4);
+    FISMOS_write_32bit_to_AXI_memory(in_32[i], i * 4);
     i += 1;
   }
 
 #ifdef FISMOS_DEBUG
-  if (0 == memcmp((char *)out, (char *)in, (sizeof(in) / sizeof(uint8_t)))) {
+  if (0 == memcmp((char *)out, (char *)in, (sizeof(in) / sizeof(uint8_t))))
+  {
     printf("Decryption YES!\n");
-  } else {
+  }
+  else
+  {
     printf("Decryption NO!\n");
   }
 #endif
 
   return 0;
 }
-
