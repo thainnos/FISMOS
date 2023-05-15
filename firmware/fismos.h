@@ -16,8 +16,8 @@ int FISMOS_rsa_sign_on_input_data(void);
 int FISMOS_AES256_decrypt_CBC(void);
 int FISMOS_keystorage(void);
 
-// AXI 
+// AXI
 int32_t FISMOS_read_32bit_from_AXI_memory(int offset);
-void FISMOS_write_32bit_to_AXI_memory(int in_out32bit,unsigned int offset);
+void FISMOS_write_32bit_to_AXI_memory(int in_out32bit, unsigned int offset);
 
 #endif

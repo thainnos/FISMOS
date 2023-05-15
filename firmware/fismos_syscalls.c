@@ -41,54 +41,54 @@ asm (
 
 void unimplemented_syscall()
 {
-	const char *p = "Unimplemented system call called!\n";
-	while (*p)
-		*(volatile int*)0x10000000 = *(p++);
-	asm volatile ("ebreak");
-	__builtin_unreachable();
+  const char *p = "Unimplemented system call called!\n";
+  while (*p)
+    *(volatile int *)0x10000000 = *(p++);
+  asm volatile("ebreak");
+  __builtin_unreachable();
 }
 
 ssize_t _read(int file, void *ptr, size_t len)
 {
-	// always EOF
-	return 0;
+  // always EOF
+  return 0;
 }
 
 ssize_t _write(int file, const void *ptr, size_t len)
 {
-	const void *eptr = ptr + len;
-	while (ptr != eptr)
-		*(volatile int*)0x10000000 = *(char*)(ptr++);
-	return len;
+  const void *eptr = ptr + len;
+  while (ptr != eptr)
+    *(volatile int *)0x10000000 = *(char *)(ptr++);
+  return len;
 }
 
 int _close(int file)
 {
-	// close is called before _exit()
-	return 0;
+  // close is called before _exit()
+  return 0;
 }
 
 int _fstat(int file, struct stat *st)
 {
-	// fstat is called during libc startup
-	errno = ENOENT;
-	return -1;
+  // fstat is called during libc startup
+  errno = ENOENT;
+  return -1;
 }
 
 void *_sbrk(ptrdiff_t incr)
 {
-	extern unsigned char _end[];   // Defined by linker
-	static unsigned long heap_end;
+  extern unsigned char _end[]; // Defined by linker
+  static unsigned long heap_end;
 
-	if (heap_end == 0)
-		heap_end = (long)_end;
+  if (heap_end == 0)
+    heap_end = (long)_end;
 
-	heap_end += incr;
-	return (void *)(heap_end - incr);
+  heap_end += incr;
+  return (void *)(heap_end - incr);
 }
 
 void _exit(int exit_status)
 {
-	asm volatile ("ebreak");
-	__builtin_unreachable();
+  asm volatile("ebreak");
+  __builtin_unreachable();
 }
