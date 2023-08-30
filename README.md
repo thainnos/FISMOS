@@ -114,8 +114,27 @@ This repository is planned to be compliant to [reuse](https://reuse.software/) i
 
 # Paper
 
-A first research paper can be found [here](http://gateway-bayern.de/BV047383875). A follow-up paper is planed for 2022.
-To cite the FISMOS, you can use the official BibTex entry:
+A first research paper can be found [here](http://gateway-bayern.de/BV047383875). A follow-up paper was published at the ARES IoT-SECFOR 2023.
+To cite the FISMOS, you can use the official BibTex entries:
+
+<pre>
+@inproceedings{10.1145/3600160.3605168,
+author = {Schubaur, Philipp and Knauer, Peter and Merli, Dominik},
+title = {FISMOS – An FPGA Implementation of a Security Module as Open Source},
+year = {2023},
+isbn = {9798400707728},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3600160.3605168},
+doi = {10.1145/3600160.3605168},
+booktitle = {Proceedings of the 18th International Conference on Availability, Reliability and Security},
+articleno = {88},
+numpages = {8},
+keywords = {Embedded Security, FPGA, RISC-V, Security Module, SoC},
+location = {Benevento, Italy},
+series = {ARES '23}
+}  
+</pre>
 
 <pre>
 @InProceedings{10.25929/7mtt-nz04,\
